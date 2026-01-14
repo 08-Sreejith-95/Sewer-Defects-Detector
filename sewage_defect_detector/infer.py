@@ -4,10 +4,11 @@ from torch.utils.data import DataLoader
 import pandas as pd
 import os
 
-from src.config import load_config
-from src.datasets import SewerMLDataset
-from src.model import build_vit_model
+from src.config.config import load_config
+from src.datasets.sewer_ml_dataset import SewerMLDataset
+from src.model.transformer_models import build_vit_model
 import sys
+from src.utils.arg_parser import parse_args
 
 # Add project root to Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))

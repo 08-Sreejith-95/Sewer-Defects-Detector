@@ -5,11 +5,11 @@ from torch.utils.data import DataLoader
 from torch.cuda.amp import autocast, GradScaler
 from sklearn.model_selection import train_test_split
 
-from src.config import load_config
-from src.datasets import SewerMLDataset
-from src.model import build_vit_model
-from src.utils import compute_class_weights
-from src.utils import parse_args, override_cfg  # your existing argparse
+from src.config.config import load_config
+from src.datasets.sewer_ml_dataset import SewerMLDataset
+from src.model.transformer_models import build_vit_model
+from src.utils.utils import compute_class_weights, override_cfg
+from src.utils.arg_parser import parse_args# your existing argparse
 import sys
 
 # Add project root to Python path

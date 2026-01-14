@@ -1,5 +1,5 @@
 import os
-from src.utils import is_kaggle
+from src.utils.utils import is_kaggle
 
 
 def get_data_root(cfg):
