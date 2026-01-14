@@ -3,7 +3,7 @@ from torch.utils.data import Dataset
 import pandas as pd
 import os
 from PIL import Image
-from src.path import get_image_dir, get_csv_path
+
 
 
 class SewerMLDataset(Dataset):

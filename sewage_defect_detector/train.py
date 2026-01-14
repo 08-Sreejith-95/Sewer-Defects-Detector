@@ -10,6 +10,7 @@ from src.datasets.sewer_ml_dataset import SewerMLDataset
 from src.model.transformer_models import build_vit_model
 from src.utils.utils import compute_class_weights, override_cfg
 from src.utils.arg_parser import parse_args# your existing argparse
+from src.path import get_image_dir, get_csv_path
 import sys
 
 # Add project root to Python path

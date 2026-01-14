@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import torch
-from src.path import get_csv_path
+
 
 #to check if the code is running in a Kaggle environment
 def is_kaggle():
@@ -9,6 +9,7 @@ def is_kaggle():
 
 #to compute class weights for imbalanced datasets only for training data
 def compute_class_weights(cfg):
+    from src.path import get_csv_path
     label_csv_path_train = get_csv_path(cfg, "train")
     data = pd.read_csv(label_csv_path_train)
     label_columns = data.columns[1:]  # Assuming first column is image names
