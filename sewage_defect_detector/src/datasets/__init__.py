@@ -1,1 +1,1 @@
-from sewer_ml_dataset import SewerMLDataset
+from .sewer_ml_dataset import SewerMLDataset
