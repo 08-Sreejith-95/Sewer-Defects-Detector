@@ -4,6 +4,7 @@ import torch
 from torch.utils.data import DataLoader
 from torch.cuda.amp import autocast, GradScaler
 from sklearn.model_selection import train_test_split
+from omegaconf import OmegaConf
 
 from src.config.config import load_config
 from src.datasets.sewer_ml_dataset import SewerMLDataset
