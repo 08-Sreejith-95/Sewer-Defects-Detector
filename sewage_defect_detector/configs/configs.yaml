@@ -1,0 +1,19 @@
+env:
+  kaggle_data_root: /kaggle/input
+  local_data_root: ./data
+  device: cuda
+
+dataset:
+  name: expandai-hiring-sewer
+  train_imgs: train_images
+  test_imgs: test_images
+  train_csv: train.csv
+  test_csv: test.csv
+  num_classes: 19
+
+training:
+  batch_size: 32
+  num_workers: 4
+  epochs: 50
+  learning_rate: 0.0001
+  weight_decay: 0.0001
