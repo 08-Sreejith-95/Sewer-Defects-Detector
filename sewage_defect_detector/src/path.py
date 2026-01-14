@@ -1,6 +1,7 @@
 import os
 from src.utils import is_kaggle
 
+
 def get_data_root(cfg):
     if is_kaggle():
         return cfg["env"]["kaggle_data_root"]
