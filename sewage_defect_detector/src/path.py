@@ -14,15 +14,14 @@ def get_dataset_root(cfg):
     )
 
 def get_image_dir(cfg, split="train"):
-    images_dir = (
-        cfg["dataset"]["train_imgs"]
-        if split == "train"
-        else cfg["dataset"]["test_imgs"]
-    )
-    return os.path.join(
-        get_dataset_root(cfg),
-        images_dir
-    )
+    if split in ("train", "val", "valid", "validation"):
+        images_dir = cfg["dataset"]["train_imgs"]
+    elif split == "test":
+        images_dir = cfg["dataset"]["test_imgs"]
+    else:
+        raise ValueError(f"Unknown split: {split}")
+
+    return os.path.join(get_dataset_root(cfg), images_dir)
 
 def get_csv_path(cfg, split="train"):
     csv_name = (
