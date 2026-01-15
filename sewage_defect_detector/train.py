@@ -67,7 +67,7 @@ def train():
     # --- Loss, optimizer ---
     class_weights = compute_class_weights(cfg).to(device)
     criterion = torch.nn.BCEWithLogitsLoss(pos_weight=class_weights)
-    optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.training.lr, weight_decay=cfg.training.weight_decay)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.training.learning_rate, weight_decay=cfg.training.weight_decay)
     scaler = GradScaler()
     
     # --- Output folder ---
