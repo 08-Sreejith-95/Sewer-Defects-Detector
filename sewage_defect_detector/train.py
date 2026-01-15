@@ -33,8 +33,7 @@ def train():
         df,
         test_size=0.2,
         random_state=42,
-        shuffle=True,
-        stratify=df.iloc[:, 1:]  # multi-label stratify
+        shuffle=True# multi-label stratify
     )
     
     # --- Datasets ---
