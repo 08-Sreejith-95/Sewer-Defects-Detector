@@ -23,9 +23,18 @@ class SewerMLDataset(Dataset):
         # dataset root
         from src.path import get_image_dir
         self.image_dir = get_image_dir(cfg, split) if cfg else None
-        self.label_cols = self.data.columns[1:] if split != "test" else None
         if split != "test":
-            self.data[self.label_cols] = self.data[self.label_cols].astype("float32")
+            self.label_cols = self.data.columns[1:]
+
+            # FORCE numeric, handle strings & NaNs
+            self.data[self.label_cols] = (
+                self.data[self.label_cols]
+                .apply(pd.to_numeric, errors="coerce")
+                .fillna(0.0)
+                .astype("float32")
+            )
+        else:
+            self.label_cols = None
 
     def __len__(self):
         return len(self.data)
