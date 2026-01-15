@@ -15,11 +15,13 @@ class SewerMLDataset(Dataset):
         if df is not None:
             self.data = df.reset_index(drop=True)
         elif cfg is not None:
+            from src.path import get_csv_path
             self.data = pd.read_csv(get_csv_path(cfg, split))
         else:
             raise ValueError("Provide either cfg or df")
 
         # dataset root
+        from src.path import get_image_dir
         self.image_dir = get_image_dir(cfg, split) if cfg else None
         self.label_cols = self.data.columns[1:] if split != "test" else None
 
