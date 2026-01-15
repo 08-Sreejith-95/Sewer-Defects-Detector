@@ -15,8 +15,8 @@ dataset:
   std: [0.229, 0.224, 0.225]
 
 training:
-  batch_size: 16
-  num_workers: 1
-  epochs: 50
+  batch_size: 32
+  num_workers: 4
+  epochs: 20
   learning_rate: 0.001
   weight_decay: 0.0001
