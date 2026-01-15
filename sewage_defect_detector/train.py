@@ -6,7 +6,7 @@ from torch.cuda.amp import autocast, GradScaler
 from sklearn.model_selection import train_test_split
 from omegaconf import OmegaConf
 from torchvision import transforms
-import tqdm
+from tqdm import tqdm
 
 from src.config.config import load_config
 from src.datasets.sewer_ml_dataset import SewerMLDataset
