@@ -25,7 +25,8 @@ def train():
     device = args.device if torch.cuda.is_available() else "cpu"
     
     # --- Load full train CSV ---
-    df = get_csv_path(cfg, "train")
+    data_path = get_csv_path(cfg, "train")
+    df = pd.read_csv(data_path)
     
     # --- Train/val split ---
     train_df, val_df = train_test_split(
