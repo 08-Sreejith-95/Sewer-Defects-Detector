@@ -53,7 +53,7 @@ def train():
     ])
     # --- Datasets ---
     train_ds = SewerMLDataset(cfg=cfg, split="train", df=train_df, transform=train_transforms)
-    val_ds   = SewerMLDataset(cfg=cfg, split="train", df=val_df, transform=val_transforms)
+    val_ds   = SewerMLDataset(cfg=cfg, split="val", df=val_df, transform=val_transforms)
     
     #debugging
     #print(train_ds.data[train_ds.label_cols].dtypes)

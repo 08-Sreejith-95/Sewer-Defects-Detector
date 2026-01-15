@@ -20,14 +20,13 @@ class SewerMLDataset(Dataset):
         else:
             raise ValueError("Provide either cfg or df")
 
+        # dataset root
         from src.path import get_image_dir
-        if split in ["train", "val"]:
-            self.image_dir = get_image_dir(cfg, "train")
-        else:
-            self.image_dir = get_image_dir(cfg, "test")
-
+        self.image_dir = get_image_dir(cfg, split) if cfg else None
         if split != "test":
             self.label_cols = self.data.columns[1:]
+
+            # FORCE numeric, handle strings & NaNs
             self.data[self.label_cols] = (
                 self.data[self.label_cols]
                 .apply(pd.to_numeric, errors="coerce")
@@ -43,21 +42,14 @@ class SewerMLDataset(Dataset):
     def __getitem__(self, idx):
         img_name = self.data.iloc[idx, 0]
         img_path = os.path.join(self.image_dir, img_name)
-
-        if not os.path.exists(img_path):
-            raise RuntimeError(f"Missing image: {img_path}")
-
         image = Image.open(img_path).convert("RGB")
 
         if self.transform:
             image = self.transform(image)
 
         if self.split != "test":
-            label = torch.tensor(
-                self.data.loc[idx, self.label_cols].values,
-                dtype=torch.float32
-            )
+            label = self.data.loc[idx][self.label_cols].to_numpy(dtype="float32")
+            label = torch.from_numpy(label)
             return image, label
         else:
             return image, img_name
-
