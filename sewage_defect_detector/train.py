@@ -41,8 +41,8 @@ def train():
     val_ds   = SewerMLDataset(cfg=cfg, split="val", df=val_df)
     
     #debugging
-    print(train_ds.data[train_ds.label_cols].dtypes)
-    print(train_ds.data[train_ds.label_cols].head())
+    #print(train_ds.data[train_ds.label_cols].dtypes)
+    #print(train_ds.data[train_ds.label_cols].head())
     
     # --- DataLoaders ---
     train_loader = DataLoader(

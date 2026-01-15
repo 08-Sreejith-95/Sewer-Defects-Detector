@@ -48,8 +48,8 @@ class SewerMLDataset(Dataset):
             image = self.transform(image)
 
         if self.split != "test":
-            label = torch.tensor(self.data.iloc[idx][self.label_cols].values, 
-                                 dtype=torch.float32)
+            label = self.data.loc[idx][self.label_cols].to_numpy(dtype=torch.float32)
+            label = torch.from_numpy(label)
             return image, label
         else:
             return image, img_name
