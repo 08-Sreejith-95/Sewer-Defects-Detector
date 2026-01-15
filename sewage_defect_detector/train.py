@@ -5,6 +5,7 @@ from torch.utils.data import DataLoader
 from torch.cuda.amp import autocast, GradScaler
 from sklearn.model_selection import train_test_split
 from omegaconf import OmegaConf
+from torchvision import transforms
 
 from src.config.config import load_config
 from src.datasets.sewer_ml_dataset import SewerMLDataset
@@ -36,9 +37,22 @@ def train():
         shuffle=True# multi-label stratify
     )
     
+    train_transforms = transforms.Compose([
+        transforms.Resize((cfg.dataset.img_size, cfg.dataset.img_size)),
+        transforms.RandomHorizontalFlip(),
+        transforms.RandomVerticalFlip(),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=cfg.dataset.mean, std=cfg.dataset.std)
+    ])
+    
+    val_transforms = transforms.Compose([
+        transforms.Resize((cfg.dataset.img_size, cfg.dataset.img_size)),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=cfg.dataset.mean, std=cfg.dataset.std)
+    ])
     # --- Datasets ---
-    train_ds = SewerMLDataset(cfg=cfg, split="train", df=train_df)
-    val_ds   = SewerMLDataset(cfg=cfg, split="val", df=val_df)
+    train_ds = SewerMLDataset(cfg=cfg, split="train", df=train_df, transform=train_transforms)
+    val_ds   = SewerMLDataset(cfg=cfg, split="val", df=val_df, transform=val_transforms)
     
     #debugging
     #print(train_ds.data[train_ds.label_cols].dtypes)
