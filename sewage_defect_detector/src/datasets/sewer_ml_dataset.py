@@ -24,6 +24,8 @@ class SewerMLDataset(Dataset):
         from src.path import get_image_dir
         self.image_dir = get_image_dir(cfg, split) if cfg else None
         self.label_cols = self.data.columns[1:] if split != "test" else None
+        if split != "test":
+            self.data[self.label_cols] = self.data[self.label_cols].astype("float32")
 
     def __len__(self):
         return len(self.data)
@@ -37,7 +39,8 @@ class SewerMLDataset(Dataset):
             image = self.transform(image)
 
         if self.split != "test":
-            label = torch.tensor(self.data.iloc[idx][self.label_cols].values, dtype=torch.float32)
+            label = torch.tensor(self.data.iloc[idx][self.label_cols].values, 
+                                 dtype=torch.float32)
             return image, label
         else:
             return image, img_name
