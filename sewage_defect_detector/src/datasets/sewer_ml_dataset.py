@@ -48,7 +48,7 @@ class SewerMLDataset(Dataset):
             image = self.transform(image)
 
         if self.split != "test":
-            label = self.data.loc[idx][self.label_cols].to_numpy(dtype=torch.float32)
+            label = self.data.loc[idx][self.label_cols].to_numpy(dtype="float32")
             label = torch.from_numpy(label)
             return image, label
         else:
