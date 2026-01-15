@@ -22,7 +22,10 @@ class SewerMLDataset(Dataset):
 
         # dataset root
         from src.path import get_image_dir
-        self.image_dir = get_image_dir(cfg, split) if cfg else None
+        if split in ("train", "val"):
+            self.image_dir = get_image_dir(cfg, split) if cfg else None
+        else:
+            self.image_dir = get_image_dir(cfg, "test") if cfg else None
         if split != "test":
             self.label_cols = self.data.columns[1:]
 
@@ -35,6 +38,9 @@ class SewerMLDataset(Dataset):
             )
         else:
             self.label_cols = None
+        
+        print(f"[Dataset init] split={split}, image_dir={self.image_dir}")
+
 
     def __len__(self):
         return len(self.data)
