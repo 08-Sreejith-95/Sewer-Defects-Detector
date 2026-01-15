@@ -42,7 +42,7 @@ def train():
     
     #debugging
     print(train_ds.data[train_ds.label_cols].dtypes)
-    print(train_ds.data[train_ds.label_col].head())
+    print(train_ds.data[train_ds.label_cols].head())
     
     # --- DataLoaders ---
     train_loader = DataLoader(
