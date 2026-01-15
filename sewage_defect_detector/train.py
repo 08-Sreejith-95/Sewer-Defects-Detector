@@ -6,6 +6,7 @@ from torch.cuda.amp import autocast, GradScaler
 from sklearn.model_selection import train_test_split
 from omegaconf import OmegaConf
 from torchvision import transforms
+import tqdm
 
 from src.config.config import load_config
 from src.datasets.sewer_ml_dataset import SewerMLDataset
@@ -99,7 +100,7 @@ def train():
         # ---- Train ----
         model.train()
         total_train_loss = 0.0
-        for images, labels in train_loader:
+        for images, labels in tqdm(train_loader, desc=f"Epoch {epoch+1}/{cfg.training.epochs} - Training"):
             images, labels = images.to(device), labels.to(device)
             optimizer.zero_grad()
             with autocast():
