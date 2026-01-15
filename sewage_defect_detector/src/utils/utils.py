@@ -19,7 +19,7 @@ def compute_class_weights(cfg):
     pos_weights = pos_weights.clip(upper=20) 
     class_weights = torch.tensor(
         pos_weights.values,
-        dtype = torch.float32).to(cfg["env"]["device"])
+        dtype = torch.float32)
     
     return class_weights
 
