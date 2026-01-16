@@ -10,6 +10,10 @@ from omegaconf import OmegaConf
 from torchvision import transforms
 from tqdm import tqdm
 
+os.environ["WANDB_API_KEY"] = os.getenv("WANDB_API_KEY")
+os.environ["WANDB_MODE"] = "disabled"
+
+
 from src.config.config import load_config
 from src.datasets.sewer_ml_dataset import SewerMLDataset
 from src.model.transformer_models import build_vit_model
