@@ -114,7 +114,7 @@ def train():
         model.eval()
         total_val_loss = 0.0
         with torch.no_grad():
-            for images, labels in val_loader:
+            for images, labels in tqdm(val_loader, desc="Validation"):
                 images, labels = images.to(device), labels.to(device)
                 logits = model(images)
                 loss = criterion(logits, labels)
