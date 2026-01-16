@@ -66,13 +66,11 @@ def train():
     
     train_transforms = transforms.Compose([
         transforms.Resize((cfg.dataset.img_size, cfg.dataset.img_size)),
-        transforms.ToTensor(),
         transforms.Normalize(mean=cfg.dataset.mean, std=cfg.dataset.std)
     ])
     
     val_transforms = transforms.Compose([
         transforms.Resize((cfg.dataset.img_size, cfg.dataset.img_size)),
-        transforms.ToTensor(),
         transforms.Normalize(mean=cfg.dataset.mean, std=cfg.dataset.std)
     ])
     # --- Datasets ---
