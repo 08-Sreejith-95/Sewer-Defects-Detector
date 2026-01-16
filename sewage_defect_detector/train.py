@@ -10,7 +10,7 @@ from omegaconf import OmegaConf
 from torchvision import transforms
 from tqdm import tqdm
 
-os.environ["WANDB_API_KEY"] = os.getenv("WANDB_API_KEY")
+#os.environ["WANDB_API_KEY"] = os.getenv("WANDB_API_KEY")
 os.environ["WANDB_MODE"] = "disabled"
 
 
