@@ -26,7 +26,7 @@ import wandb
 # Add project root to Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-wandb.login()
+#wandb.login()
 
 def train():
     args = parse_args()
@@ -154,7 +154,7 @@ def train():
                 preds = (probs > 0.5).int()
                 all_preds.append(preds.cpu())
                 all_labels.append(labels.cpu())
-                total_val_loss += loss.item()
+                #total_val_loss += loss.item()
         #avg_val_loss = total_val_loss / len(val_loader)
         all_preds = torch.cat(all_preds).numpy()
         all_labels = torch.cat(all_labels).numpy()
