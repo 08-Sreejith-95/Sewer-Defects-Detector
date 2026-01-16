@@ -2,7 +2,8 @@ import torch
 from torch.utils.data import Dataset
 import pandas as pd
 import os
-from PIL import Image
+#from PIL import Image
+from torchvision.io import read_image
 
 
 
@@ -48,7 +49,8 @@ class SewerMLDataset(Dataset):
     def __getitem__(self, idx):
         img_name = self.data.iloc[idx, 0]
         img_path = os.path.join(self.image_dir, img_name)
-        image = Image.open(img_path).convert("RGB")
+        image = read_image(img_path)
+        image = image.float() / 255.0  # Normalize to [0, 1]
 
         if self.transform:
             image = self.transform(image)
