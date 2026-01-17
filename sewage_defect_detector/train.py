@@ -33,22 +33,7 @@ def train():
     cfg = load_config(args.config)
     cfg = override_cfg(cfg, args)
     
-    wandb.init(
-    project="sewage-ml",
-    name=args.run_name,
-    config={
-        "model": "convnext_tiny",
-        "batch_size": cfg.training.batch_size,
-        "learning_rate": cfg.training.learning_rate,
-        "weight_decay": cfg.training.weight_decay,
-        "epochs": cfg.training.epochs,
-        "img_size": cfg.dataset.img_size,
-        "num_classes": cfg.dataset.num_classes,
-        "loss": "BCEWithLogitsLoss",
-        "optimizer": "AdamW",
-        "amp": True
-    }
-)
+
     
     device = args.device if torch.cuda.is_available() else "cpu"
     
