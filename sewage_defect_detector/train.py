@@ -21,7 +21,7 @@ from src.utils.utils import compute_class_weights, override_cfg
 from src.utils.arg_parser import parse_args# your existing argparse
 from src.path import get_image_dir, get_csv_path
 import sys
-import wandb
+#import wandb
 
 # Add project root to Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -177,20 +177,13 @@ def train():
             torch.save(model.state_dict(), best_model_path)
             print(f"New best model saved: {best_model_path}")
         
+
         
-        wandb.log({
-                "epoch": epoch + 1,
-                "val/loss": avg_val_loss,
-                "val/f1_micro": val_f1_micro,
-                "val/f1_macro": val_f1_macro,
-                "val/f1_samples": val_f1_samples,
-                "val/precision": val_precision,
-                "val/recall": val_recall
-                })
+        
 
     
     print(f"Training finished. Best model saved at: {best_model_path}")
-    wandb.finish()
+   
 
 if __name__ == "__main__":
     train()
