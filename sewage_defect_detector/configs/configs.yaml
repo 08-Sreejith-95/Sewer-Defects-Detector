@@ -1,5 +1,5 @@
 env:
-  kaggle_data_root: /root/.cache/kagglehub/competitions/expandai-hiring-sewer
+  kaggle_data_root: /root/.cache/kagglehub/competitions
   local_data_root: ./data
   device: cuda
 
