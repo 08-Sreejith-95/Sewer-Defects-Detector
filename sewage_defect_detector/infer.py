@@ -78,8 +78,9 @@ def infer():
 
             logits = model(images)
             probs = torch.sigmoid(logits)
+            preds = (probs >= 0.5).int()
 
-            all_probs.append(probs.cpu())
+            all_probs.append(preds.cpu())
             all_names.extend(img_names)
 
     # ---- Post-processing ----
