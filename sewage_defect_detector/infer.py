@@ -78,11 +78,11 @@ def infer():
             images = images.to(device, non_blocking=True)
 
             logits = model(images)
-            probs = torch.sigmoid(logits).cpu().numpy()
-            thresholds = np.array(cfg.dataset.CIW)
-            preds = (probs >= thresholds).astype(int)
+            probs = torch.sigmoid(logits).cpu()
+            thresholds = torch.tensor(cfg.dataset.CIW)
+            preds = (probs >= thresholds).int()
 
-            all_probs.append(preds)
+            all_probs.append(preds.cpu())
             all_names.extend(img_names)
 
     # ---- Post-processing ----
