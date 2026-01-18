@@ -79,8 +79,8 @@ def infer():
 
             logits = model(images)
             probs = torch.sigmoid(logits).cpu()
-            thresholds = torch.tensor(cfg.dataset.CIW)
-            preds = (probs >= thresholds).int()
+            #thresholds = torch.tensor(cfg.dataset.CIW)
+            preds = (probs >= 0.5).int()
 
             all_probs.append(preds.cpu())
             all_names.extend(img_names)
