@@ -34,7 +34,6 @@ def infer():
     # ---- Transforms (MUST match training) ----
     test_transforms = transforms.Compose([
         transforms.Resize((cfg.dataset.img_size, cfg.dataset.img_size)),
-        transforms,
         transforms.Normalize(
             mean=cfg.dataset.mean,
             std=cfg.dataset.std
