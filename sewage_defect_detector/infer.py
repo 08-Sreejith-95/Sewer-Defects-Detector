@@ -1,4 +1,4 @@
-from src.utils import parse_args
+
 import torch
 from torch.utils.data import DataLoader
 import pandas as pd
@@ -13,6 +13,7 @@ from src.datasets.sewer_ml_dataset import SewerMLDataset
 from src.model.transformer_models import build_vit_model
 import sys
 from src.utils.arg_parser import parse_args
+
 
 
 # Add project root to Python path
