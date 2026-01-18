@@ -88,7 +88,7 @@ def infer():
     class_names = cfg.dataset.class_names
 
     submission = pd.DataFrame(probs, columns=class_names)
-    submission.insert(0, "image_name", all_names)
+    submission.insert(0, "Filename", all_names)
 
     submission.to_csv(f"/kaggle/working/{args.submission_name}", index=False)
     print(f" Submission saved at: /kaggle/working/{args.submission_name}")
