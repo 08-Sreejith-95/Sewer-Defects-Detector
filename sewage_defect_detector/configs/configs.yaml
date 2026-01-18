@@ -1,5 +1,5 @@
 env:
-  kaggle_data_root: /root/.cache/kagglehub/competitions
+  kaggle_data_root: /kaggle/input
   local_data_root: ./data
   device: cuda
 
