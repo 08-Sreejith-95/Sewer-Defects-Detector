@@ -14,6 +14,7 @@ from src.model.transformer_models import build_vit_model
 import sys
 from src.utils.arg_parser import parse_args
 
+
 # Add project root to Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
