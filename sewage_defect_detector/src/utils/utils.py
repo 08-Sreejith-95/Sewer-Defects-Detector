@@ -2,7 +2,6 @@ import os
 import pandas as pd
 import torch
 
-
 #to check if the code is running in a Kaggle environment
 def is_kaggle():
     return os.path.exists('/kaggle/input')

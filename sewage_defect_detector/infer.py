@@ -5,6 +5,7 @@ import pandas as pd
 import os
 from torchvision import transforms
 from tqdm import tqdm
+import numpy as np
 
 from src.path import get_image_dir, get_csv_path
 
@@ -77,8 +78,9 @@ def infer():
             images = images.to(device, non_blocking=True)
 
             logits = model(images)
-            probs = torch.sigmoid(logits)
-            preds = (probs >= 0.5).int()
+            probs = torch.sigmoid(logits).cpu().numpy()
+            thresholds = np.array(cfg.dataset.CIW)
+            preds = (probs >= thresholds).astype(int)
 
             all_probs.append(preds.cpu())
             all_names.extend(img_names)
