@@ -82,7 +82,7 @@ def infer():
             thresholds = np.array(cfg.dataset.CIW)
             preds = (probs >= thresholds).astype(int)
 
-            all_probs.append(preds.cpu())
+            all_probs.append(preds)
             all_names.extend(img_names)
 
     # ---- Post-processing ----
