@@ -7,7 +7,7 @@ from torch.cuda.amp import autocast, GradScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import f1_score, precision_score, recall_score
 from omegaconf import OmegaConf
-from torchvision import transforms
+import torchvision.transforms.v2 as T
 from tqdm import tqdm
 
 #os.environ["WANDB_API_KEY"] = os.getenv("WANDB_API_KEY")
@@ -49,15 +49,33 @@ def train():
         shuffle=True# multi-label stratify
     )
     
-    train_transforms = transforms.Compose([
-        transforms.Resize((cfg.dataset.img_size, cfg.dataset.img_size)),
-        transforms.Normalize(mean=cfg.dataset.mean, std=cfg.dataset.std)
-    ])
+    train_transforms = T.Compose([
+    T.Resize((cfg.dataset.img_size, cfg.dataset.img_size)),          # works on Tensor
+    T.RandomHorizontalFlip(p=0.5),
+
+    T.ColorJitter(
+        brightness=0.1,
+        contrast=0.1,
+        saturation=0.1,
+        hue=0.05
+    ),
+
+    T.ToDtype(torch.float32, scale=True),  # uint8 → float32 [0,1]
+    T.Normalize(
+        mean=cfg.dataset.mean,
+        std=cfg.dataset.std
+    ),
+])
     
-    val_transforms = transforms.Compose([
-        transforms.Resize((cfg.dataset.img_size, cfg.dataset.img_size)),
-        transforms.Normalize(mean=cfg.dataset.mean, std=cfg.dataset.std)
-    ])
+    val_transforms = T.Compose([
+    T.Resize((cfg.dataset.img_size, cfg.dataset.img_size)),
+    T.ToDtype(torch.float32, scale=True),
+    T.Normalize(
+        mean=cfg.dataset.mean,
+        std=cfg.dataset.std
+    ),
+])
+
     # --- Datasets ---
     train_ds = SewerMLDataset(cfg=cfg, split="train", df=train_df, transform=train_transforms)
     val_ds   = SewerMLDataset(cfg=cfg, split="val", df=val_df, transform=val_transforms)
