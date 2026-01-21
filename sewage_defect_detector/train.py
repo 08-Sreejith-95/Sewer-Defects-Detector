@@ -52,15 +52,7 @@ def train():
     
     train_transforms = T.Compose([
     T.Resize((cfg.dataset.img_size, cfg.dataset.img_size)),          # works on Tensor
-    T.RandomHorizontalFlip(p=0.5),
-
-    T.RandomApply([T.ColorJitter(
-        brightness=0.03,
-        contrast=0.03,
-        saturation=0.03,
-        hue=0.01
-    )], p=0.2),
-
+    T.RandomHorizontalFlip(p=0.4),
     T.ToDtype(torch.float32, scale=True),  # uint8 → float32 [0,1]
     T.Normalize(
         mean=cfg.dataset.mean,
