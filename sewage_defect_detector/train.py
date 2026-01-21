@@ -9,6 +9,7 @@ from sklearn.metrics import f1_score, precision_score, recall_score
 from omegaconf import OmegaConf
 import torchvision.transforms.v2 as T
 from tqdm import tqdm
+from timm.utils import ModelEmaV2
 
 #os.environ["WANDB_API_KEY"] = os.getenv("WANDB_API_KEY")
 os.environ["WANDB_MODE"] = "disabled"
@@ -53,12 +54,12 @@ def train():
     T.Resize((cfg.dataset.img_size, cfg.dataset.img_size)),          # works on Tensor
     T.RandomHorizontalFlip(p=0.5),
 
-    T.ColorJitter(
-        brightness=0.1,
-        contrast=0.1,
-        saturation=0.1,
-        hue=0.05
-    ),
+    T.RandomApply([T.ColorJitter(
+        brightness=0.03,
+        contrast=0.03,
+        saturation=0.03,
+        hue=0.01
+    )], p=0.2),
 
     T.ToDtype(torch.float32, scale=True),  # uint8 → float32 [0,1]
     T.Normalize(
@@ -102,10 +103,16 @@ def train():
     
     # --- Model ---
     model = build_vit_model(cfg.dataset.num_classes).to(device)
+    ema_model = ModelEmaV2(
+        model,
+        decay=0.9997,
+        device=device)
     
     # Resume checkpoint if provided
     if args.resume:
-        model.load_state_dict(torch.load(args.resume, map_location=device))
+        state = torch.load(args.resume, map_location=device)
+        model.load_state_dict(state)
+        ema_model.module.load_state_dict(state)
         print(f"Resumed model from {args.resume}")
     
     # --- Loss, optimizer ---
@@ -136,11 +143,14 @@ def train():
             torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
             scaler.step(optimizer)
             scaler.update()
+            ema_model.update(model)
             total_train_loss += loss.item()
         avg_train_loss = total_train_loss / len(train_loader)
         
         # ---- Validate ----
-        model.eval()
+        eval_model = ema_model.module
+        eval_model.eval()
+
         #total_val_loss = 0.0
         val_losses = []
         all_preds = []
@@ -148,7 +158,7 @@ def train():
         with torch.no_grad():
             for images, labels in tqdm(val_loader, desc="Validation"):
                 images, labels = images.to(device), labels.to(device)
-                logits = model(images)
+                logits = eval_model(images)
                 loss = criterion(logits, labels)
                 val_losses.append(loss.item())
                 probs = torch.sigmoid(logits)
@@ -177,7 +187,8 @@ def train():
         # ---- Save best checkpoint only ----
         if val_f1_micro > best_f1_micro:
             best_f1_micro = val_f1_micro
-            torch.save(model.state_dict(), best_model_path)
+            torch.save(ema_model.module.state_dict(), best_model_path)
+
             print(f"New best model saved: {best_model_path}")
         
 

@@ -6,6 +6,7 @@ import os
 from torchvision import transforms
 from tqdm import tqdm
 import numpy as np
+from timm.utils import ModelEmaV2
 
 from src.path import get_image_dir, get_csv_path
 
@@ -63,11 +64,16 @@ def infer():
 
     # ---- Load model ----
     model = build_vit_model(cfg.dataset.num_classes)
-    model.load_state_dict(
-        torch.load(args.checkpoint, map_location=device)
+    ema_model = ModelEmaV2(
+        model,
+        decay=0.9997,
+        device=device
     )
-    model.to(device)
-    model.eval()
+    state = torch.load(args.checkpoint, map_location=device)
+    ema_model.module.load_state_dict(state)
+    ema_model.module.eval()
+    eval_model = ema_model.module
+
 
     all_probs = []
     all_names = []
@@ -77,10 +83,10 @@ def infer():
         for images, img_names in tqdm(test_loader, desc="Inferencing"):
             images = images.to(device, non_blocking=True)
 
-            logits = model(images)
+            logits = eval_model(images)
             probs = torch.sigmoid(logits).cpu()
             #thresholds = torch.tensor(cfg.dataset.CIW)
-            preds = (probs >= 0.5).int()
+            preds = (probs >= 0.4).int()
 
             all_probs.append(preds.cpu())
             all_names.extend(img_names)
