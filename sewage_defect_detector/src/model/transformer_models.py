@@ -14,7 +14,7 @@ def build_vit_model(cfg):
                                nn.LayerNorm(in_features), 
                                nn.Linear(in_features, cfg.model.hidden_dim),
                                nn.GELU(),
-                               nn.Dropout(cfg.model.dropout),
+                               nn.Dropout(cfg.model.drop_out),
                                nn.Linear(cfg.model.hidden_dim, cfg.dataset.num_classes)
                                )
     return model
