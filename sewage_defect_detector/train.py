@@ -96,7 +96,7 @@ def train():
     
     # --- Model ---
     #print(f"model configs: {cfg.model}")
-    model = build_vit_model(cfg.model).to(device)
+    model = build_vit_model(cfg).to(device)
     ema_model = ModelEmaV2(
         model,
         decay=0.9997,
