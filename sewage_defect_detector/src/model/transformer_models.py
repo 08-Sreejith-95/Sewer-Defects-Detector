@@ -2,6 +2,7 @@ import timm
 import torch.nn as nn
 
 def build_vit_model(model_cfg):
+    print(f"loaded config: {model_cfg}")
     model = timm.create_model(
         "convnext_tiny",
         pretrained=True,
