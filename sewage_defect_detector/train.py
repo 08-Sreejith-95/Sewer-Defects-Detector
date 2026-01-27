@@ -154,7 +154,7 @@ def train():
                 loss = criterion(logits, labels)
                 val_losses.append(loss.item())
                 probs = torch.sigmoid(logits)
-                preds = (probs > 0.5).int()
+                preds = (probs > 0.4).int()
                 all_preds.append(preds.cpu())
                 all_labels.append(labels.cpu())
                 #total_val_loss += loss.item()
