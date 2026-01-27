@@ -35,3 +35,11 @@ def override_cfg(cfg, args):
         cfg["training"]["weight_decay"] = args.weight_decay
     return cfg
 
+def freeze_backbone(model):
+    for name , param in model.named_parameters():
+        if "head" not in name:
+            param.requires_grad = False
+
+def unfreeze_backbone(model):
+    for param in model.parameters():
+        param.requires_grad = True

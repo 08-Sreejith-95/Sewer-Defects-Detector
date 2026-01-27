@@ -63,7 +63,7 @@ def infer():
     )
 
     # ---- Load model ----
-    model = build_vit_model(cfg.dataset.num_classes)
+    model = build_vit_model(cfg.model)
     ema_model = ModelEmaV2(
         model,
         decay=0.9997,

@@ -10,6 +10,7 @@ from omegaconf import OmegaConf
 import torchvision.transforms.v2 as T
 from tqdm import tqdm
 from timm.utils import ModelEmaV2
+from src.utils.utils import freeze_backbone, unfreeze_backbone
 
 #os.environ["WANDB_API_KEY"] = os.getenv("WANDB_API_KEY")
 os.environ["WANDB_MODE"] = "disabled"
@@ -94,7 +95,7 @@ def train():
     )
     
     # --- Model ---
-    model = build_vit_model(cfg.dataset.num_classes).to(device)
+    model = build_vit_model(cfg.model).to(device)
     ema_model = ModelEmaV2(
         model,
         decay=0.9997,
@@ -102,15 +103,24 @@ def train():
     
     # Resume checkpoint if provided
     if args.resume:
-        state = torch.load(args.resume, map_location=device)
-        model.load_state_dict(state)
-        ema_model.module.load_state_dict(state)
-        print(f"Resumed model from {args.resume}")
+        state_old = torch.load(args.resume, map_location=device)
+        backbone_state = {k: v for k, v in state_old.items() if "head" not in k}
+        missing_keys, unexpctd_keys = model.load_state_dict(backbone_state, strict=False)
+        print(f"Resumed backbone weights from: {args.resume}")
+        print(f"Missing keys (new head): {missing_keys}")
+        print(f"Unexpected keys: {unexpctd_keys}")
+    
+    
+    #---freezing back bone for first 3 epochs---
+    freeze_backbone(model)
+    print("-----Froze backbone for initial training.-----")
     
     # --- Loss, optimizer ---
     class_weights = compute_class_weights(cfg).to(device)
     criterion = torch.nn.BCEWithLogitsLoss(pos_weight=class_weights)
-    optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.training.learning_rate, weight_decay=cfg.training.weight_decay)
+    optimizer = torch.optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()),
+                                  lr=cfg.training.learning_rate, weight_decay=cfg.training.weight_decay)
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=cfg.training.epochs, eta_min=1e-6)
     scaler = GradScaler()
     
     # --- Output folder ---
@@ -122,6 +132,12 @@ def train():
     # --- Training loop ---
     for epoch in range(cfg.training.epochs):
         # ---- Train ----
+        if epoch == 3:
+            unfreeze_backbone(model)
+            print("Unfroze backbone for fine-tuning.")
+        
+        optimizer = torch.optim.AdamW(model.parameters(),
+                                      lr=cfg.training.learning_rate, weight_decay=cfg.training.weight_decay)
         model.train()
         total_train_loss = 0.0
         for images, labels in tqdm(train_loader, desc=f"Epoch {epoch+1}/{cfg.training.epochs} - Training"):
@@ -137,6 +153,7 @@ def train():
             scaler.update()
             ema_model.update(model)
             total_train_loss += loss.item()
+        scheduler.step()
         avg_train_loss = total_train_loss / len(train_loader)
         
         # ---- Validate ----
