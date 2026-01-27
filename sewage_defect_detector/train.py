@@ -95,7 +95,7 @@ def train():
     )
     
     # --- Model ---
-    print(f"model configs: {cfg.model}")
+    #print(f"model configs: {cfg.model}")
     model = build_vit_model(cfg.model).to(device)
     ema_model = ModelEmaV2(
         model,
