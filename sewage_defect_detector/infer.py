@@ -24,6 +24,10 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 def infer():
     args = parse_args()
+    
+    if args.checkpoint is None:
+        raise ValueError("--checkpoint is required for inference")
+
 
     # ---- Load config ----
     cfg = load_config(args.config)

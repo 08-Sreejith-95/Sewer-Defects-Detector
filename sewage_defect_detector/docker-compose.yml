@@ -1,0 +1,15 @@
+services:
+  infer:
+    build: .
+    volumes:
+      - ./models:/models        #------- place model_int8.onnx here
+      - ./data:/data            # -------- place test images here
+      - ./output:/output        # --------- predictions.csv written here
+    environment:
+      - PYTHONPATH=/Sewer-Defects-Detector/sewage_defect_detector
+    command: >
+      python onnx_inference.py
+        --model /models/model_int8.onnx
+        --image_dir /data/images
+        --threshold 0.4
+        --output /output/predictions.csv

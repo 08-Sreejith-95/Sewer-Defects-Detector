@@ -32,6 +32,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 def train():
     args = parse_args()
+    if args.checkpoint is None:
+        raise ValueError("--checkpoint is required for inference")
     cfg = load_config(args.config)
     cfg = override_cfg(cfg, args)
     

@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install ruff pytest
+          pip install -r requirements-inference.txt
+
+      - name: Lint with ruff
+        run: ruff check sewage_defect_detector/ --select E,F,W --ignore E501
+
+      - name: Run unit tests
+        working-directory: sewage_defect_detector
+        env:
+          PYTHONPATH: ${{ github.workspace }}/sewage_defect_detector
+        run: pytest tests/ -v --tb=short
+
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t sewer-defects-detector:${{ github.sha }} .
+
+      - name: Log in to GHCR
+        if: github.ref == 'refs/heads/main'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push to GHCR
+        if: github.ref == 'refs/heads/main'
+        run: |
+          docker tag sewer-defects-detector:${{ github.sha }} \
+            ghcr.io/08-sreejith-95/sewer-defects-detector:latest
+          docker push ghcr.io/08-sreejith-95/sewer-defects-detector:latest
