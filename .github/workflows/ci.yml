@@ -22,8 +22,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install ruff pytest
-          pip install -r requirements-inference.txt
+          pip install -r requirements.txt
 
       - name: Lint with ruff
         run: ruff check sewage_defect_detector/ --select E,F,W --ignore E501
