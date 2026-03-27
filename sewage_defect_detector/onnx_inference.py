@@ -13,7 +13,7 @@ from PIL import Image
 
 
 # -----------------!!!Must match config exactly!!!-----------------
-IMG_SIZE   = 256
+IMG_SIZE   = 224 #change for modified head model, for default head model it is 224 --- IGNORE ---
 MEAN       = np.array([0.485, 0.456, 0.406], dtype=np.float32)
 STD        = np.array([0.229, 0.224, 0.225], dtype=np.float32)
 THRESHOLD  = 0.4
