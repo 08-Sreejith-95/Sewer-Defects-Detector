@@ -1,6 +1,6 @@
 # ── Core deep learning ────────────────────────────────────────────────────────
-torch==2.3.0
-torchvision==0.18.0
+torch
+torchvision
 
 # ── Model backbone ────────────────────────────────────────────────────────────
 timm==1.0.3
@@ -13,15 +13,20 @@ onnxruntime==1.18.1
 omegaconf==2.3.0
 
 # ── Data ──────────────────────────────────────────────────────────────────────
-pandas==2.2.2
-numpy==1.26.4
-scikit-learn==1.5.0
-Pillow==10.3.0
+pandas
+numpy
+scikit-learn
+Pillow
 
 # ── Training utilities ────────────────────────────────────────────────────────
-tqdm==4.66.4
-wandb==0.17.0
+tqdm
+wandb
 
 # ── Testing + linting ─────────────────────────────────────────────────────────
-pytest==8.2.2
-ruff==0.4.9
+pytest
+ruff
+
+# ── Optional: For visualization and debugging ─────────────────────────────────
+matplotlib
+grad-cam
+opencv-python

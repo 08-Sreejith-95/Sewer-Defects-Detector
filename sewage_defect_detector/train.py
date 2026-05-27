@@ -11,6 +11,7 @@ import torchvision.transforms.v2 as T
 from tqdm import tqdm
 from timm.utils import ModelEmaV2
 from src.utils.utils import freeze_backbone, unfreeze_backbone
+import wandb
 
 #os.environ["WANDB_API_KEY"] = os.getenv("WANDB_API_KEY")
 os.environ["WANDB_MODE"] = "disabled"

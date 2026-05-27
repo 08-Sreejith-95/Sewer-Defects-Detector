@@ -1,2 +1,4 @@
 .DS_Store
 __pycache__/
+sewage_defect_detector/configs/submission.csv
+.vscode

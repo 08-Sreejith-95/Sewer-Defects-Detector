@@ -5,22 +5,22 @@ Replicates the exact preprocessing from infer.py.
 import argparse
 import time
 from pathlib import Path
+from src.config.config import load_config
+from src.utils.arg_parser import parse_args
 
 import numpy as np
 import onnxruntime as ort
 import pandas as pd
 from PIL import Image
 
-
+args = parse_args()
+cfg = load_config(args.config)
 # -----------------!!!Must match config exactly!!!-----------------
 IMG_SIZE   = 224 #change for modified head model, for default head model it is 224 --- IGNORE ---
 MEAN       = np.array([0.485, 0.456, 0.406], dtype=np.float32)
 STD        = np.array([0.229, 0.224, 0.225], dtype=np.float32)
 THRESHOLD  = 0.4
-CLASS_NAMES = [
-    "VA","RB","OB","PF","DE","FS","IS","RO","IN",
-    "AF","BE","FO","GR","PH","PB","OS","OP","OK","ND"
-]
+CLASS_NAMES = cfg.class_names if 'cfg' in globals() else [f"defect_{i}" for i in range(19)] # fallback if config not loaded
 
 
 def preprocess(image_path: str) -> np.ndarray:
