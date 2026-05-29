@@ -13,7 +13,7 @@ from src.utils.arg_parser import parse_args
 from onnx_inference import predict_single
 
 cfg = load_config('configs/configs.yaml')
-CLASS_NAMES = cfg.class_names
+CLASS_NAMES = cfg.dataset.class_names
 IMG_SIZE = cfg.dataset.img_size
 
 NUM_CLASSES = len(CLASS_NAMES)  # 19
