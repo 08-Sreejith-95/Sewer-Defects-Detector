@@ -30,3 +30,7 @@ ruff
 matplotlib
 grad-cam
 opencv-python
+
+#fastapi dependencies
+fastapi
+uvicorn 

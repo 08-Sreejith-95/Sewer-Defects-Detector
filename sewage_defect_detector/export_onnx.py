@@ -6,6 +6,8 @@ import onnxruntime as ort
 import numpy as np
 from omegaconf import OmegaConf
 from src.model.transformer_models import build_vit_model
+from src.utils.arg_parser import parse_args
+from src.config.config import load_config
 
 
 def export(checkpoint_path: str, config_path: str, output_path: str):
@@ -58,9 +60,7 @@ def export(checkpoint_path: str, config_path: str, output_path: str):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--checkpoint", required=True, help="Path to EMA .pt checkpoint")
-    parser.add_argument("--config",     required=True, help="Path to config YAML")
-    parser.add_argument("--output",     default="model.onnx")
-    args = parser.parse_args()
-    export(args.checkpoint, args.config, args.output)
+    args = parse_args()
+    if not args.checkpoint:
+        raise ValueError("--checkpoint is required for ONNX export")
+    export(args.checkpoint, args.config, args.onnx_output)

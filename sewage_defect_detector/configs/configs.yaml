@@ -27,3 +27,13 @@ training:
   epochs: 20
   learning_rate: 3e-4
   weight_decay: 1e-4
+
+onnx_export:
+  checkpoint_path: ./checkpoints/convnext_tiny_epoch_20.pt
+  onnx_output_path: ./onnx_models/sewer_model.onnx
+
+onnx_inference:
+  onnx_model_path: ./onnx_models/sewer_model.onnx
+  test_image_dir: ./data/test_images
+  threshold: 0.4
+  output_csv: predictions.csv

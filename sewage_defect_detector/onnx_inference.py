@@ -12,52 +12,45 @@ import numpy as np
 import onnxruntime as ort
 import pandas as pd
 from PIL import Image
-
-args = parse_args()
-cfg = load_config(args.config)
-# -----------------!!!Must match config exactly!!!-----------------
-IMG_SIZE   = 224 #change for modified head model, for default head model it is 224 --- IGNORE ---
-MEAN       = np.array([0.485, 0.456, 0.406], dtype=np.float32)
-STD        = np.array([0.229, 0.224, 0.225], dtype=np.float32)
-THRESHOLD  = 0.4
-CLASS_NAMES = cfg.class_names if 'cfg' in globals() else [f"defect_{i}" for i in range(19)] # fallback if config not loaded
+from preprocess import preprocess_image_path
 
 
-def preprocess(image_path: str) -> np.ndarray:
-    """PIL load --> resize --> float32 --> normalize ---> NCHW."""
-    img = Image.open(image_path).convert("RGB")
-    img = img.resize((IMG_SIZE, IMG_SIZE), Image.BILINEAR)
-    arr = np.array(img, dtype=np.float32) / 255.0          # [0,1]
-    arr = (arr - MEAN) / STD                                # normalize
-    arr = arr.transpose(2, 0, 1)[np.newaxis]                # HWC ---> NCHW
-    return arr
+
 
 
 def predict_single(
     session: ort.InferenceSession,
     image_path: str,
-    threshold: float = THRESHOLD,
+    img_size: int,
+    threshold: float,
+    class_names,
+    mean, 
+    std
 ) -> dict:
-    input_tensor = preprocess(image_path)
+    input_tensor = preprocess_image_path(image_path, img_size, mean, std)
     t0 = time.perf_counter()
     logits = session.run(None, {"image": input_tensor})[0][0]        # (19,)
     latency_ms = (time.perf_counter() - t0) * 1000
 
     probs  = 1.0 / (1.0 + np.exp(-logits))                 # sigmoid
-    labels = [c for c, p in zip(CLASS_NAMES, probs) if p >= threshold]
+    labels = [c for c, p in zip(class_names, probs) if p >= threshold]
     return {
         "image":        image_path,
         "labels":       labels if labels else ["OK"],
-        "probabilities": dict(zip(CLASS_NAMES, probs.tolist())),
+        "probabilities": dict(zip(class_names, probs.tolist())),
         "latency_ms":   round(latency_ms, 2),
     }
 
 
 def run_batch(
     model_path: str,
-    image_dir:  str,
-    threshold:  float = THRESHOLD,
-    output_csv: str   = "predictions.csv",
+    image_dir: str,
+    threshold: float,
+    class_names,
+    img_size: int,
+    mean,
+    std,
+    output_csv: str,
 ):
     sess = ort.InferenceSession(
         model_path, providers=["CPUExecutionProvider"]
@@ -69,7 +62,7 @@ def run_batch(
     if not images:
         raise FileNotFoundError(f"No images found in {image_dir}")
 
-    results = [predict_single(sess, str(p), threshold) for p in images]
+    results = [predict_single(sess, str(p), img_size, threshold, class_names, mean, std) for p in images]
 
     df = pd.DataFrame([{
         "Filename":   r["image"],
@@ -84,12 +77,8 @@ def run_batch(
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="ONNX inference for sewer defect detection"
-    )
-    parser.add_argument("--model",     required=True, help="Path to .onnx model")
-    parser.add_argument("--image_dir", required=True, help="Directory of test images")
-    parser.add_argument("--threshold", type=float, default=THRESHOLD)
-    parser.add_argument("--output",    default="predictions.csv")
-    args = parser.parse_args()
-    run_batch(args.model, args.image_dir, args.threshold, args.output)
+    args = parse_args()
+    cfg = load_config(args.config)  
+    run_batch(cfg.onnx_inference.onnx_model_path, cfg.onnx_inference.test_image_dir, 
+              cfg.onnx_inference.threshold, cfg.dataset.class_names, cfg.dataset.img_size, 
+              cfg.dataset.mean, cfg.dataset.std, cfg.onnx_inference.output_csv)

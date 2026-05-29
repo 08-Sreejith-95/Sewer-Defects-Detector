@@ -131,7 +131,7 @@ def train():
     os.makedirs(f"outputs/{args.run_name}", exist_ok=True)
 
     best_f1_micro = float("-inf")
-    best_model_path = f"outputs/{args.run_name}/model_best.pt"
+    best_model_path = f"checkpoints/{args.run_name}/model_best.pt" #output path for best model checkpoint root folder is output in kaggle
     
     # --- Training loop ---
     for epoch in range(cfg.training.epochs):
