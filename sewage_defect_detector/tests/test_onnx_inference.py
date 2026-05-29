@@ -7,16 +7,15 @@ import numpy as np
 import pytest
 from unittest.mock import MagicMock
 from PIL import Image
+from preprocess import preprocess_image_path
+from src.config.config import load_config
+from src.utils.arg_parser import parse_args
+from onnx_inference import predict_single
 
-from onnx_inference import (
-    preprocess,
-    predict_single,
-    CLASS_NAMES,
-    IMG_SIZE,
-    MEAN,
-    STD,
-    THRESHOLD,
-)
+args = parse_args()
+cfg = load_config(args.config)
+CLASS_NAMES = cfg.class_names
+IMG_SIZE = cfg.dataset.img_size
 
 NUM_CLASSES = len(CLASS_NAMES)  # 19
 
@@ -78,26 +77,26 @@ def negative_session():
 class TestPreprocess:
 
     def test_output_shape(self, sample_jpg):
-        arr = preprocess(sample_jpg)
+        arr = preprocess_image_path(sample_jpg, IMG_SIZE, cfg.dataset.mean, cfg.dataset.std)
         assert arr.shape == (1, 3, IMG_SIZE, IMG_SIZE), \
             f"Expected (1,3,{IMG_SIZE},{IMG_SIZE}), got {arr.shape}"
 
     def test_output_dtype(self, sample_jpg):
-        assert preprocess(sample_jpg).dtype == np.float32
+        assert preprocess_image_path(sample_jpg, IMG_SIZE, cfg.dataset.mean, cfg.dataset.std).dtype == np.float32
 
     def test_resize_from_non_square(self, sample_jpg):
         """640x480 input must be resized to square IMG_SIZE."""
-        arr = preprocess(sample_jpg)
+        arr = preprocess_image_path(sample_jpg, IMG_SIZE, cfg.dataset.mean, cfg.dataset.std)
         assert arr.shape[-2:] == (IMG_SIZE, IMG_SIZE)
 
     def test_black_image_normalisation(self, black_png):
         """Pixel value 0 → (0 - mean) / std — should be negative."""
-        arr = preprocess(black_png)
+        arr = preprocess_image_path(black_png, IMG_SIZE, cfg.dataset.mean, cfg.dataset.std)
         assert arr.mean() < 0, "Black image should normalise to negative values"
 
     def test_white_image_normalisation(self, white_png):
         """Pixel value 255 → (1.0 - mean) / std — should be positive."""
-        arr = preprocess(white_png)
+        arr = preprocess_image_path(white_png, IMG_SIZE, cfg.dataset.mean, cfg.dataset.std)
         assert arr.mean() > 0, "White image should normalise to positive values"
 
     def test_channel_order_is_rgb(self, tmp_path):
@@ -107,14 +106,14 @@ class TestPreprocess:
         arr_img[:, :, 0] = 255
         p = tmp_path / "red.png"
         Image.fromarray(arr_img).save(p)
-        out = preprocess(str(p))
+        out = preprocess_image_path(str(p), IMG_SIZE, cfg.dataset.mean, cfg.dataset.std)
         # R channel (idx 0): (1.0 - 0.485) / 0.229 ≈ 2.25
         # G channel (idx 1): (0.0 - 0.456) / 0.224 ≈ -2.04
         assert out[0, 0].mean() > 1.0,  "R channel should be positive for red image"
         assert out[0, 1].mean() < -1.0, "G channel should be negative for red image"
 
     def test_handles_png(self, black_png):
-        arr = preprocess(black_png)
+        arr = preprocess_image_path(black_png, IMG_SIZE, cfg.dataset.mean, cfg.dataset.std)
         assert arr.shape == (1, 3, IMG_SIZE, IMG_SIZE)
 
 
