@@ -12,8 +12,7 @@ from src.config.config import load_config
 from src.utils.arg_parser import parse_args
 from onnx_inference import predict_single
 
-args = parse_args()
-cfg = load_config(args.config)
+cfg = load_config('configs/configs.yaml')
 CLASS_NAMES = cfg.class_names
 IMG_SIZE = cfg.dataset.img_size
 
