@@ -16,16 +16,16 @@ from preprocess import preprocess_image_path
 
 
 
-
+cfg = load_config('configs/configs.yaml')
 
 def predict_single(
     session: ort.InferenceSession,
     image_path: str,
-    img_size: int,
-    threshold: float,
-    class_names,
-    mean, 
-    std
+    img_size: int = cfg.dataset.img_size,
+    threshold: float = cfg.onnx_inference.threshold,
+    class_names: list = cfg.dataset.class_names,
+    mean: float = cfg.dataset.mean,
+    std: float = cfg.dataset.std
 ) -> dict:
     input_tensor = preprocess_image_path(image_path, img_size, mean, std)
     t0 = time.perf_counter()

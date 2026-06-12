@@ -1,6 +1,6 @@
 """
-Unit tests for onnx_inference.py.
-No real dataset or model file required — uses synthetic images
+------------Unit tests for onnx_inference.py.---------------
+to check the model pipeline from preprocessing to prediction, tests predict_single with various input toy images
 and a mocked ONNX session throughout.
 """
 import numpy as np
@@ -15,7 +15,6 @@ from onnx_inference import predict_single
 cfg = load_config('configs/configs.yaml')
 CLASS_NAMES = cfg.dataset.class_names
 IMG_SIZE = cfg.dataset.img_size
-
 NUM_CLASSES = len(CLASS_NAMES)  # 19
 
 
@@ -54,7 +53,7 @@ def mock_session():
 
 @pytest.fixture
 def positive_session():
-    """Mock session where all logits are very high → all classes fire."""
+    """Mock session where all logits are very high - all classes fire."""
     sess = MagicMock()
     sess.run.return_value = [
         np.full((1, NUM_CLASSES), 10.0, dtype=np.float32)
@@ -63,7 +62,7 @@ def positive_session():
 
 @pytest.fixture
 def negative_session():
-    """Mock session where all logits are very low → no class fires."""
+    """Mock session where all logits are very low - no class fires."""
     sess = MagicMock()
     sess.run.return_value = [
         np.full((1, NUM_CLASSES), -10.0, dtype=np.float32)
