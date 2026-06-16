@@ -52,7 +52,7 @@ layer before the classification head.
 
 ### ✅ Multi-Label Detection: 5 Co-occurring Defects
 
-![Multi-Label GradCAM](assets/gradcam_RB_OB_FS_RO_PB.png)
+![Multi-Label GradCAM](sewage_defect_detector/assets/gradcam_RB_OB_FS_RO_PB.png)
 
 The model correctly detects all 5 ground-truth defect classes with high confidence
 on a severely degraded pipe junction. Activations are spatially overlapping across
