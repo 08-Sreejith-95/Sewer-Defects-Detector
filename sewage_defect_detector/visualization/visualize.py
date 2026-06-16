@@ -59,7 +59,7 @@ def gradcam_visualize(image_path, model, target_class_idx):
 if __name__ == "__main__":
     model = build_vit_model(cfg)
     checkpoint = torch.load(args.checkpoint)
-    model.load_state_dict(checkpoint["model_state_dict"])
+    model.load_state_dict(checkpoint)
     model.eval()
     sample_image = "sewage_defect_detector/visualization/defect_sample_1.png"  # To do:add configuration option for this path
     target_class_idx = 1  # replace with actual target class index
