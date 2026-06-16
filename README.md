@@ -1,5 +1,5 @@
-# 🔍 Sewer Defect Detector
-# Author Sreejith Kannath Kalam - ML Engineer - MSc Robotics and Autonomous Systems
+# 🔍 Sewer Defect Detector - Kaggle friendly
+# Author: Sreejith Kannath Kalam - ML Engineer - MSc Robotics and Autonomous Systems
 
 > Multi-label sewer defect classification on the [Sewer-ML dataset](https://github.com/AndersJuul/Sewer-ML)  
 > using ConvNeXt-Tiny with class-imbalance-aware training, EMA, and ONNX deployment.
@@ -14,7 +14,7 @@ trains a ConvNeXt-Tiny backbone on the Sewer-ML dataset and deploys it as a
 containerised FastAPI inference service with ONNX Runtime and INT8 quantisation.
 
 Key contributions:
-- **+14.5% micro-F1 improvement** over the default ConvNeXt-Tiny baseline on the hidden test set in Kaggle competitiom
+- **+14.5% micro-F1 improvement** over the default ConvNeXt-Tiny baseline on the hidden test set in the Kaggle competition
 - Class-imbalance-aware loss function to handle rare defect categories
 - GradCAM interpretability analysis revealing both correct localisation and dataset artifacts
 - Full MLOps pipeline: experiment tracking --> ONNX export --> Docker --> CI/CD
@@ -71,7 +71,7 @@ heavily deteriorated infrastructure.
 
 ### ✅ Single Defect Localisation: Foreign Object (FO)
 
-![GradCAM FO](assets/gradcam_FO.png)
+![GradCAM FO](sewage_defect_detector/assets/gradcam_FO.png)
 
 For isolated defects the model produces tight, focused activations precisely
 localised on the defect region. The foreign object (bolt/cap on pipe floor)
@@ -82,11 +82,11 @@ pipe structure is suppressed.
 
 ### ⚠️ Limitation: Shortcut Learning on ND Class
 
-![GradCAM ND](assets/gradcam_ND.png)
+![GradCAM ND](sewage_defect_detector/assets/gradcam_ND.png)
 
 GradCAM analysis on the ND (No Defect) class revealed that the model attends
 primarily to **metadata text overlays** (USMH/DSMH identifiers, depth markers)
-rather than actual pipe appearance. This indicates spurious correlation with
+rather than the actual pipe appearance. This indicates spurious correlation with
 dataset annotation artifacts. Images with overlaid metadata are disproportionately
 labelled ND in the Sewer-ML dataset.
 
@@ -134,7 +134,7 @@ Sigmoid → Multi-label output
 
 ## Deployment
 
-Model is exported to ONNX with INT8 quantisation for CPU inference
+The model is exported to ONNX with INT8 quantisation for CPU inference
 via ONNX Runtime, containerised with Docker, and served via FastAPI.
 
 ```
@@ -161,19 +161,7 @@ curl -X POST "http://localhost:8000/predict" \
      -F "file=@your_image.jpg"
 ```
 
-### Response format
 
-```json
-{
-  "predicted_classes": ["RB", "OB", "FS"],
-  "confidence_scores": {
-    "RB": 0.982,
-    "OB": 0.874,
-    "FS": 0.761
-  },
-  "inference_time_ms": 12.4
-}
-```
 
 ---
 
@@ -233,7 +221,7 @@ CI/CD (GitHub Actions) ← lint + test + build on every push
 
 ---
 
-## GradCAM Visualisation Script
+## GradCAM Visualisation Script for model interpretability
 
 ```bash
 # Run GradCAM on a custom image
@@ -246,7 +234,7 @@ The script:
 - Auto-detects all classes above the 0.4 confidence threshold
 - Generates one GradCAM heatmap per predicted class
 - Plots a confidence score bar chart alongside the heatmaps
-- Saves the full grid to `/kaggle/working/` or your specified output directory 
+- Saves the full grid to your specified output directory 
 
 ---
 
