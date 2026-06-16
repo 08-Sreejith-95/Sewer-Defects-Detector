@@ -61,6 +61,6 @@ if __name__ == "__main__":
     checkpoint = torch.load(args.checkpoint)
     model.load_state_dict(checkpoint)
     model.eval()
-    sample_image = "/kaggle/working/Sewer-Defects-Detector/sewage_defect_detector/visualization/defect_class_1_RB.png"  # To do:add configuration option for this path
+    sample_image = "/kaggle/working/Sewer-Defects-Detector/sewage_defect_detector/visualization/defect_class_14_PB.png"  # To do:add configuration option for this path
     target_class_idx = 1  # replace with actual target class index
     gradcam_visualize(sample_image, model, target_class_idx)
