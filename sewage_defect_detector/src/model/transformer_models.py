@@ -6,7 +6,7 @@ import torch.nn as nn
 
 def build_vit_model(cfg):
     #print(f"loaded config: {model_cfg}")
-    if cfg.modified_head:
+    if cfg.dataset.modified_head:
         print("Using modified head with hidden_dim =", cfg.model.hidden_dim)
         model = timm.create_model(
         "convnext_tiny",
