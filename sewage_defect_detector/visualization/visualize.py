@@ -50,10 +50,10 @@ def gradcam_visualize(image_path, model, target_class_idx):
     axes[0].set_title("Input")
     axes[0].axis("off")
     axes[1].imshow(visualization)
-    axes[1].set_title(f"GradCAM — Class: {cfg.class_names[target_class_idx]}")
+    axes[1].set_title(f"GradCAM — Class: {cfg.dataset.class_names[target_class_idx]}")
     axes[1].axis("off")
     plt.tight_layout()
-    plt.savefig(f"gradcam_{cfg.class_names[target_class_idx]}.png", dpi=150)
+    plt.savefig(f"gradcam_{cfg.dataset.class_names[target_class_idx]}.png", dpi=150)
     plt.show()
     
 if __name__ == "__main__":
