@@ -40,7 +40,7 @@ def gradcam_visualize(image_path, model):
         output = model(tensor)
         probs = torch.sigmoid(output)  # multi-label so sigmoid not softmax
         predicted_classes = (probs > 0.4).nonzero(as_tuple=True)[1]
-        print("Predicted classes:", [cfg.dataset.class_names[i] for i in predicted_classes])
+        print("Predicted classes:", [cfg.dataset.class_names[i.item()] for i in predicted_classes])
     target_class_idx = probs.squeeze().argmax().item()
     cam = GradCAM(model=model, target_layers=target_layers)
     targets = [ClassifierOutputTarget(target_class_idx)]
