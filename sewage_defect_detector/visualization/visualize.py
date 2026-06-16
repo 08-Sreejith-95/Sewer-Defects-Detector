@@ -21,7 +21,7 @@ args = parse_args()
 cfg = load_config(args.config)
 
 
-#Function to visualize heatmaps using GradCAM for a given image and model for evaluation
+#Model Interpretibility with GradCAM 
 def gradcam_visualize(image_path, model, save_dir="/kaggle/working"):
     
     target_layers = [model.stages[-1].blocks[-1].conv_dw]
@@ -41,12 +41,12 @@ def gradcam_visualize(image_path, model, save_dir="/kaggle/working"):
         output = model(tensor)
         probs = torch.sigmoid(output).squeeze()
 
-    predicted_indices = (probs > 0.4).nonzero(as_tuple=False).squeeze(1)
+    predicted_indices = (probs > 0.5).nonzero(as_tuple=False).squeeze(1)
 
     # fallback: if nothing passes threshold, take top-1
     if len(predicted_indices) == 0:
         predicted_indices = [probs.argmax().item()]
-        print("No class above threshold — using top-1 prediction")
+        print("No class above threshold.--------using top-1 prediction------")
     
     predicted_names  = [cfg.dataset.class_names[i.item()] for i in predicted_indices]
     predicted_scores = [probs[i].item() for i in predicted_indices]
@@ -56,13 +56,13 @@ def gradcam_visualize(image_path, model, save_dir="/kaggle/working"):
         print(f"  {name}: {score:.3f}")
 
     # --- build grid layout ---
-    # Row 1: original image + all GradCAM heatmaps
+    # Row 1: original image + all GradCAM heatmaps for comparison
     # Row 2: score bar chart summary
     n_defects  = len(predicted_indices)
     n_cols     = n_defects + 1          # +1 for original image
     fig        = plt.figure(figsize=(4 * n_cols, 9))
 
-    # -- top row: images --
+    # -- top row: original image + GradCAMs --
     axes_imgs = [fig.add_subplot(2, n_cols, i + 1) for i in range(n_cols)]
 
     # original image
@@ -146,5 +146,5 @@ if __name__ == "__main__":
 
 # Then use the top predicted class for GradCAM
     model.eval()
-    sample_image = "/kaggle/working/Sewer-Defects-Detector/sewage_defect_detector/visualization/PB_RB_OB_FS.png"  # To do:add configuration option for this path
+    sample_image = "/kaggle/working/Sewer-Defects-Detector/sewage_defect_detector/visualization/FO_FS_defect.png"  # To do:add configuration option for this path
     gradcam_visualize(sample_image, model)
