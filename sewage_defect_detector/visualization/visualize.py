@@ -24,7 +24,7 @@ cfg = load_config(args.config)
 
 def gradcam_visualize(image_path, model, target_class_idx):
     
-    target_layers = [model.model.stages[-1].blocks[-1].conv_dw]
+    target_layers = [model.stages[-1].blocks[-1].conv_dw]
 
     transform = T.Compose([
         T.Resize((224, 224)),
