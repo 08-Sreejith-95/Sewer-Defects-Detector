@@ -68,5 +68,5 @@ if __name__ == "__main__":
 
 # Then use the top predicted class for GradCAM
     model.eval()
-    sample_image = "/kaggle/working/Sewer-Defects-Detector/sewage_defect_detector/visualization/defect_class_14_PB.png"  # To do:add configuration option for this path
+    sample_image = "/kaggle/working/Sewer-Defects-Detector/sewage_defect_detector/visualization/sewage_defect_detector/visualization/defect_class_multiple.jpg"  # To do:add configuration option for this path
     gradcam_visualize(sample_image, model)
