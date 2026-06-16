@@ -1,4 +1,4 @@
-# 🔍 Sewer Defect Detector - Kaggle friendly
+# 🔍 Sewer Defect Detector 
 # Author: Sreejith Kannath Kalam - ML Engineer - MSc Robotics and Autonomous Systems
 
 > Multi-label sewer defect classification on the [Sewer-ML dataset](https://github.com/AndersJuul/Sewer-ML)  
