@@ -11,7 +11,7 @@ import torchvision.transforms as T
 
 import os
 import sys
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 from src.model.transformer_models import build_vit_model
 from src.config.config import load_config
 from src.utils.arg_parser import parse_args
