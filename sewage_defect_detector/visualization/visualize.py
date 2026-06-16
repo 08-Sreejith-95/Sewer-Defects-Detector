@@ -21,8 +21,8 @@ args = parse_args()
 cfg = load_config(args.config)
 
 
-
-def gradcam_visualize(image_path, model, target_class_idx):
+#Function to visualize heatmaps using GradCAM for a given image and model for evaluation
+def gradcam_visualize(image_path, model):
     
     target_layers = [model.stages[-1].blocks[-1].conv_dw]
 
@@ -36,7 +36,12 @@ def gradcam_visualize(image_path, model, target_class_idx):
     image = Image.open(image_path).convert("RGB")
     rgb_img = np.array(image.resize((224, 224))) / 255.0
     tensor = transform(image).unsqueeze(0)
-
+    with torch.no_grad():
+        output = model(tensor)
+        probs = torch.sigmoid(output)  # multi-label so sigmoid not softmax
+        predicted_classes = (probs > 0.4).nonzero(as_tuple=True)[1]
+        print("Predicted classes:", [cfg.dataset.class_names[i] for i in predicted_classes])
+    target_class_idx = probs.squeeze().argmax().item()
     cam = GradCAM(model=model, target_layers=target_layers)
     targets = [ClassifierOutputTarget(target_class_idx)]
     grayscale_cam = cam(input_tensor=tensor, targets=targets)[0]
@@ -60,7 +65,8 @@ if __name__ == "__main__":
     model = build_vit_model(cfg)
     checkpoint = torch.load(args.checkpoint)
     model.load_state_dict(checkpoint)
+
+# Then use the top predicted class for GradCAM
     model.eval()
     sample_image = "/kaggle/working/Sewer-Defects-Detector/sewage_defect_detector/visualization/defect_class_14_PB.png"  # To do:add configuration option for this path
-    target_class_idx = 1  # replace with actual target class index
-    gradcam_visualize(sample_image, model, target_class_idx)
+    gradcam_visualize(sample_image, model)
