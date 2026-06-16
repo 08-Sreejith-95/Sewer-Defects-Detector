@@ -57,7 +57,7 @@ async def predict(file: UploadFile = File(...)):
     raw_output = session.run(
         [output_name],
         {input_name: input_tensor}
-    )[0]  # shape: (1, 17)
+    )[0]  # shape: (1, 19)
 
     # 5. Post-process: sigmoid → probabilities
     probabilities = 1 / (1 + np.exp(-raw_output[0]))  # sigmoid
