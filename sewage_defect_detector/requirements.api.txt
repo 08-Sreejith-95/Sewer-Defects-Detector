@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+onnxruntime
+numpy
+opencv-python-headless
+Pillow
+omegaconf
+hydra-core
+python-multipart

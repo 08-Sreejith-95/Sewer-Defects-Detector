@@ -6,12 +6,13 @@ import numpy as np
 from preprocess import preprocess_image_bytes
 from src.config.config import load_config
 from src.utils.arg_parser import parse_args
+import os
 
-args = parse_args()
-cfg = load_config(args.config)
+CONFIG_PATH = os.getenv("CONFIG_PATH", "configs/configs.yaml") #setting up environment variable for config path with a default fallback
+cfg = load_config(CONFIG_PATH)
 
-# ── Sewer-ML class names (17 defect classes + normal) ──────────────
-CLASS_NAMES = cfg.class_names  # fallback if config not loaded
+# ── Sewer-ML class names (19 defect classes + normal) ──────────────
+CLASS_NAMES = cfg.dataset.class_names  # fallback if config not loaded
 THRESHOLD = cfg.onnx_inference.threshold  # fallback if config not loaded
 
 # ── Load ONNX model ONCE at startup (not on every request) for latency optimization ─────────
